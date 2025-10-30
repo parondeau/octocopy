@@ -17,8 +17,7 @@ This Turborepo includes the following packages/apps:
 ### Apps and Packages
 
 - `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@pretty-pr/ui`: a stub React component library shared by both `web` and `docs` applications
+- `web`: a [Tanstack Start](https://tanstack.com/start) app
 - `@pretty-pr/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@pretty-pr/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
