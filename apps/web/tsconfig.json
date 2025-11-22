@@ -1,5 +1,5 @@
 {
-  "extends": "@pretty-pr/typescript-config/base.json",
+  "extends": "@octocopy/typescript-config/base.json",
   "include": [
     "**/*.ts",
     "**/*.tsx",

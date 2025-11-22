@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@octocopy/web",
   "private": true,
   "type": "module",
   "scripts": {
@@ -28,8 +28,8 @@
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
-    "@pretty-pr/eslint-config": "*",
-    "@pretty-pr/typescript-config": "*",
+    "@octocopy/eslint-config": "*",
+    "@octocopy/typescript-config": "*",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^22.10.2",

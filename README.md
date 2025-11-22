@@ -18,8 +18,8 @@ This Turborepo includes the following packages/apps:
 
 - `docs`: a [Next.js](https://nextjs.org/) app
 - `web`: a [Tanstack Start](https://tanstack.com/start) app
-- `@pretty-pr/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@pretty-pr/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `@octocopy/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@octocopy/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
