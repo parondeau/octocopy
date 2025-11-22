@@ -5,13 +5,11 @@
   "private": true,
   "exports": {
     "./base": "./base.js",
-    "./next-js": "./next.js",
     "./react-internal": "./react-internal.js",
     "./tanstack-start": "./tanstack-start.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
-    "@next/eslint-plugin-next": "^15.5.0",
     "eslint": "^9.38.0",
     "eslint-config-prettier": "^10.1.1",
     "eslint-plugin-only-warn": "^1.1.0",
