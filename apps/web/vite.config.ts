@@ -18,7 +18,7 @@ const config = defineConfig({
   ],
   nitro: {
     preset: 'vercel', // Nitro will emit a Vercel-ready output
-    vercel: { functions: { runtime: 'bun' } },
+    vercel: { functions: { runtime: 'bun1.x' } },
   },
 })
 
