@@ -16,6 +16,10 @@ const config = defineConfig({
     nitro(),
     viteReact(),
   ],
+  nitro: {
+    preset: 'vercel', // Nitro will emit a Vercel-ready output
+    vercel: { functions: { runtime: 'bun' } },
+  },
 })
 
 export default config
