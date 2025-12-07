@@ -1,4 +1,4 @@
-export type Mode = 'app' | 'token' | 'ui';
+export type Mode = "token" | "ui";
 
 export type OnboardingStep = {
   id: string;

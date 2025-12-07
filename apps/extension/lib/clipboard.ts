@@ -40,7 +40,7 @@ export function buildCopyPayload(
   const htmlSuffix = htmlLinks ? ` [${htmlLinks}]` : "";
 
   const text = `[${repoSlug}/${pr.number}]: ${data.title} (+${data.additions}/-${data.deletions})${textSuffix}`;
-  const html = `<strong>[${repoSlug}/${pr.number}]:</strong> ${escapeHtml(
+  const html = `[${repoSlug}/${pr.number}]: ${escapeHtml(
     data.title
   )} (+${data.additions}/-${data.deletions})${htmlSuffix}`;
 

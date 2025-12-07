@@ -18,10 +18,8 @@ const badgeBase =
 export function CredentialsSection({
   mode,
   tokenValue,
-  appStatus,
   tokenStatus,
   detectedSite,
-  onRefreshApp,
   onValidateToken,
   onTokenChange,
 }: Props) {
@@ -30,7 +28,7 @@ export function CredentialsSection({
       <h2 className="text-base font-semibold text-slate-900">
         Credentials &amp; configuration
       </h2>
-      {mode === "app" && (
+      {/* {mode === "app" && (
         <>
           <p className="text-sm text-slate-600">
             Connect the popup to the Octocopy API so we can mint short-lived
@@ -55,13 +53,22 @@ export function CredentialsSection({
             <code className="font-mono text-[11px]">apps/web</code>.
           </p>
         </>
-      )}
+      )} */}
 
       {mode === "token" && (
         <>
           <p className="text-sm text-slate-600">
             Paste a classic PAT with <code>repo</code> + <code>read:org</code>{" "}
             scopes to fetch private PR data.
+            <a
+              href="https://octocopy-web.vercel.app/docs/personal-access-token"
+              className="ml-1 text-indigo-600 underline hover:text-indigo-500"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read the setup guide
+            </a>
+            .
           </p>
           <label className="flex flex-col gap-2 text-sm font-medium text-slate-600">
             <span>Personal access token</span>

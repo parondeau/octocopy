@@ -5,10 +5,7 @@ import { PlatformsSection } from "./components/PlatformsSection";
 import { useStoredState } from "./hooks/useStoredState";
 import type { Mode, PlatformSettings } from "./types";
 
-const MODE_OPTIONS: Record<
-  Mode,
-  { title: string; summary: string; highlights: string[] }
-> = {
+const MODE_OPTIONS = {
   token: {
     title: "Personal Access Token",
     summary:
@@ -24,14 +21,6 @@ const MODE_OPTIONS: Record<
       "No credentials. We parse the DOM of the current page to assemble PR stats.",
     highlights: ["Great for read-only access", "Limited to visible PR info"],
   },
-  app: {
-    title: "GitHub App",
-    summary: "Uses the Octocopy backend to mint short-lived tokens.",
-    highlights: [
-      "Works across orgs where the app is installed",
-      "Automatic rate limiting + audit trail",
-    ],
-  },
 };
 
 const defaultPlatforms: PlatformSettings = {
@@ -40,7 +29,7 @@ const defaultPlatforms: PlatformSettings = {
 };
 
 function App() {
-  const [mode, setMode] = useStoredState<Mode>("octocopy-mode", "app");
+  const [mode, setMode] = useStoredState<Mode>("octocopy-mode", "ui");
   const [platforms, setPlatforms] = useStoredState(
     "octocopy-platforms",
     defaultPlatforms
