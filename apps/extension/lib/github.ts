@@ -19,7 +19,16 @@ const tokenCache = new Map<string, TokenCacheEntry>();
 export async function fetchPullRequestWithApp(
   pr: PullRequestLocation
 ): Promise<PullRequestData | null> {
+  // Public repositories can be queried without any credentials, so try that path
+  // before asking the backend for an app token.
+  const unauthenticatedResult = await requestPullRequest(pr, null);
+  if (unauthenticatedResult) {
+    return unauthenticatedResult;
+  }
+
   const token = await getAccessToken(pr);
+  if (!token) return null;
+
   return requestPullRequest(pr, token);
 }
 
