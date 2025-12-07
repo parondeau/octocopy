@@ -1,12 +1,9 @@
 import { Octokit } from "@octokit/core";
 
-import type {
-  PullRequestData,
-  PullRequestLocation,
-} from "./pull-request";
+import type { PullRequestData, PullRequestLocation } from "./pull-request";
 
 const API_BASE_URL: string =
-  import.meta.env.VITE_OCTOCOPY_API_BASE_URL || "http://localhost:3001";
+  import.meta.env.VITE_OCTOCOPY_API_BASE_URL || "https://octocopy.app/api";
 const EXTENSION_API_KEY = import.meta.env.VITE_OCTOCOPY_EXTENSION_API_KEY;
 
 type TokenCacheEntry = {
@@ -73,9 +70,7 @@ async function requestPullRequest(
   }
 }
 
-async function getAccessToken(
-  pr: PullRequestLocation
-): Promise<string | null> {
+async function getAccessToken(pr: PullRequestLocation): Promise<string | null> {
   const cacheKey = `${pr.owner}/${pr.repo}`;
   const cached = tokenCache.get(cacheKey);
   if (cached && cached.expiresAt - Date.now() > 60_000) {

@@ -9,12 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsPersonalAccessTokenRouteImport } from './routes/docs/personal-access-token'
 import { Route as DocsInstallGithubAppRouteImport } from './routes/docs/install-github-app'
 import { Route as ApiGithubAppTokenRouteImport } from './routes/api/github-app-token'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,6 +55,8 @@ const ApiGithubAppTokenRoute = ApiGithubAppTokenRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/api/github-app-token': typeof ApiGithubAppTokenRoute
   '/docs/install-github-app': typeof DocsInstallGithubAppRoute
   '/docs/personal-access-token': typeof DocsPersonalAccessTokenRoute
@@ -50,6 +64,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/api/github-app-token': typeof ApiGithubAppTokenRoute
   '/docs/install-github-app': typeof DocsInstallGithubAppRoute
   '/docs/personal-access-token': typeof DocsPersonalAccessTokenRoute
@@ -58,6 +74,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/api/github-app-token': typeof ApiGithubAppTokenRoute
   '/docs/install-github-app': typeof DocsInstallGithubAppRoute
   '/docs/personal-access-token': typeof DocsPersonalAccessTokenRoute
@@ -67,6 +85,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/privacy'
+    | '/terms'
     | '/api/github-app-token'
     | '/docs/install-github-app'
     | '/docs/personal-access-token'
@@ -74,6 +94,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/privacy'
+    | '/terms'
     | '/api/github-app-token'
     | '/docs/install-github-app'
     | '/docs/personal-access-token'
@@ -81,6 +103,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/privacy'
+    | '/terms'
     | '/api/github-app-token'
     | '/docs/install-github-app'
     | '/docs/personal-access-token'
@@ -89,6 +113,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
   ApiGithubAppTokenRoute: typeof ApiGithubAppTokenRoute
   DocsInstallGithubAppRoute: typeof DocsInstallGithubAppRoute
   DocsPersonalAccessTokenRoute: typeof DocsPersonalAccessTokenRoute
@@ -97,6 +123,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -137,6 +177,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
   ApiGithubAppTokenRoute: ApiGithubAppTokenRoute,
   DocsInstallGithubAppRoute: DocsInstallGithubAppRoute,
   DocsPersonalAccessTokenRoute: DocsPersonalAccessTokenRoute,
