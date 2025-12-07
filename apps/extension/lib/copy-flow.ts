@@ -6,13 +6,12 @@ import { loadExtensionSettings } from "./settings";
 
 export async function copyPullRequest(pr: PullRequestLocation) {
   const settings = await loadExtensionSettings();
-  console.log(settings);
   const data = await resolvePullRequestData(pr, settings.mode, settings.token);
   if (!data) {
     throw new Error("Unable to load PR details.");
   }
 
-  const payload = buildCopyPayload(pr, data);
+  const payload = buildCopyPayload(pr, data, settings.platforms);
   await copyToClipboard(payload);
 }
 

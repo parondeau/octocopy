@@ -1,24 +1,48 @@
-import type {
-  PullRequestData,
-  PullRequestLocation,
-} from "./pull-request";
+import type { PlatformSettings } from "../entrypoints/popup/types";
+import type { PullRequestData, PullRequestLocation } from "./pull-request";
 
 export type CopyPayload = {
   text: string;
   html: string;
 };
 
+const GRAPHITE_BASE_URL = "https://graphite.com";
+
 export function buildCopyPayload(
   pr: PullRequestLocation,
-  data: PullRequestData
+  data: PullRequestData,
+  platforms: PlatformSettings
 ): CopyPayload {
   const repoSlug = `${pr.owner}/${pr.repo}`;
-  const text = `[${repoSlug}/${pr.number}]: ${data.title} (+${data.additions}/-${data.deletions}) [[github](${data.html_url})]`;
+
+  const links: Array<{ label: string; url: string }> = [];
+  if (platforms.github) {
+    links.push({ label: "github", url: data.html_url });
+  }
+  if (platforms.graphite) {
+    links.push({
+      label: "graphite",
+      url: `${GRAPHITE_BASE_URL}/${pr.owner}/${pr.repo}/pull/${pr.number}`,
+    });
+  }
+
+  const textLinks = links
+    .map(({ label, url }) => `[${label}](${url})`)
+    .join(", ");
+  const htmlLinks = links
+    .map(
+      ({ label, url }) =>
+        `<a href="${escapeHtml(url)}">${escapeHtml(label)}</a>`
+    )
+    .join(", ");
+
+  const textSuffix = textLinks ? ` [${textLinks}]` : "";
+  const htmlSuffix = htmlLinks ? ` [${htmlLinks}]` : "";
+
+  const text = `[${repoSlug}/${pr.number}]: ${data.title} (+${data.additions}/-${data.deletions})${textSuffix}`;
   const html = `<strong>[${repoSlug}/${pr.number}]:</strong> ${escapeHtml(
     data.title
-  )} (+${data.additions}/-${data.deletions}) [<a href="${
-    data.html_url
-  }">github</a>]`;
+  )} (+${data.additions}/-${data.deletions})${htmlSuffix}`;
 
   return { text, html };
 }

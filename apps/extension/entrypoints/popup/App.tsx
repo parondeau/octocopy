@@ -35,7 +35,7 @@ const MODE_OPTIONS: Record<
 
 const defaultPlatforms: PlatformSettings = {
   github: true,
-  graphite: true,
+  graphite: false,
 };
 
 function App() {
