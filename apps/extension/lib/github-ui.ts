@@ -10,6 +10,11 @@ const TITLE_SELECTORS = [
   ".gh-header-title .markdown-title",
 ];
 
+const GRAPHITE_TITLE_SELECTORS = [
+  '[class^="PullRequestInfo_pullRequestTitle__"] [class*="utilities_textEmphasis__"]',
+  '[data-new-file-navigation-enabled="true"] [class*="utilities_textEmphasis__"]',
+];
+
 const DIFFSTAT_SELECTORS = [
   "[data-test-selector='diff-stats']",
   "[data-component='diffstat']",
@@ -20,7 +25,8 @@ const DIFFSTAT_SELECTORS = [
 export function scrapePullRequestFromDom(
   pr: PullRequestLocation
 ): PullRequestData | null {
-  const title = readTitle();
+  const platform = detectPlatform();
+  const title = readTitle(platform);
   if (!title) return null;
 
   const stats = readDiffStats();
@@ -33,24 +39,54 @@ export function scrapePullRequestFromDom(
   };
 }
 
-function readTitle(): string | null {
-  for (const selector of TITLE_SELECTORS) {
+type HostPlatform = "github" | "graphite" | "other";
+
+function readTitle(platform: HostPlatform): string | null {
+  const selectors =
+    platform === "graphite"
+      ? [...GRAPHITE_TITLE_SELECTORS, ...TITLE_SELECTORS]
+      : TITLE_SELECTORS;
+
+  for (const selector of selectors) {
     const element = document.querySelector<HTMLElement>(selector);
-    if (element) {
-      const value = element.textContent?.trim();
-      if (value) return value;
-    }
+    if (!element) continue;
+    const value = cleanTitleText(element.textContent, platform);
+    if (value) return value;
   }
 
   const meta = document.querySelector<HTMLMetaElement>(
     "meta[property='og:title']"
   );
-  if (meta?.content) {
-    const cleaned = meta.content.replace(/·.*$/, "").trim();
-    if (cleaned) return cleaned;
-  }
+  const metaValue = cleanTitleText(meta?.content, platform);
+  if (metaValue) return metaValue;
 
   return null;
+}
+
+function cleanTitleText(
+  raw: string | null | undefined,
+  platform: HostPlatform
+): string | null {
+  if (!raw) return null;
+  const trimmed = raw.replace(/·.*$/, "").trim();
+  if (!trimmed) return null;
+
+  if (platform === "graphite") {
+    const match = trimmed.match(/^#\d+\s+(.*)$/);
+    if (match?.[1]) {
+      const title = match[1].trim();
+      if (title) return title;
+    }
+  }
+
+  return trimmed;
+}
+
+function detectPlatform(): HostPlatform {
+  const host = window.location.host;
+  if (host === "github.com" || host.endsWith(".github.com")) return "github";
+  if (host.endsWith("graphite.com")) return "graphite";
+  return "other";
 }
 
 function readDiffStats(): { additions: number; deletions: number } {

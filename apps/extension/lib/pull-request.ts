@@ -15,15 +15,25 @@ export function parsePullRequestFromPath(
   pathname: string
 ): PullRequestLocation | null {
   const segments = pathname.split("/").filter(Boolean);
-  if (segments.length < 4) return null;
 
-  const [owner, repo, pullLiteral, pullNumber] = segments;
-  if (pullLiteral !== "pull") return null;
+  // GitHub PR path: /:owner/:repo/pull/:number
+  if (segments.length >= 4 && segments[2] === "pull") {
+    const [owner, repo, , pullNumber] = segments;
+    const number = Number(pullNumber);
+    if (!Number.isInteger(number)) return null;
+    return { owner, repo, number };
+  }
 
-  const number = Number(pullNumber);
-  if (!Number.isInteger(number)) return null;
+  // Graphite PR path: /github/pr/:owner/:repo/:number(/...)
+  if (segments.length >= 5 && segments[0] === "github" && segments[1] === "pr") {
+    const owner = segments[2];
+    const repo = segments[3];
+    const number = Number(segments[4]);
+    if (!owner || !repo || !Number.isInteger(number)) return null;
+    return { owner, repo, number };
+  }
 
-  return { owner, repo, number };
+  return null;
 }
 
 export function serializePullRequest(pr: PullRequestLocation) {
