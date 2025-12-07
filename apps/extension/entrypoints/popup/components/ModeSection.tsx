@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Mode } from "../types";
 import { cx, listCardClass, sectionCardClass } from "./ui";
 
@@ -14,10 +15,49 @@ type Props = {
 };
 
 export function ModeSection({ mode, options, onChange }: Props) {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const activeOption = options[mode];
+  const accordionContentId = "mode-section-options";
+
   return (
     <section className={sectionCardClass}>
-      <h2 className="text-base font-semibold text-slate-900">Mode</h2>
-      <div className="flex flex-col gap-3">
+      <button
+        type="button"
+        onClick={() => setIsCollapsed((prev) => !prev)}
+        aria-expanded={!isCollapsed}
+        aria-controls={accordionContentId}
+        className="flex w-full items-center justify-between gap-2 text-left cursor-pointer"
+      >
+        <div>
+          <h2 className="text-base font-semibold text-slate-900">Mode</h2>
+          <p className="text-sm text-slate-500">
+            {activeOption
+              ? `${activeOption.title} • ${activeOption.summary}`
+              : "Choose how Octocopy fetches PR stats"}
+          </p>
+        </div>
+        <svg
+          className={cx(
+            "h-4 w-4 text-slate-500 transition-transform",
+            !isCollapsed && "rotate-180"
+          )}
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M5 8l5 5 5-5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      <div
+        id={accordionContentId}
+        className={cx("mt-3 flex flex-col gap-3", isCollapsed && "hidden")}
+      >
         {(Object.keys(options) as Mode[]).map((option) => {
           const optionData = options[option];
           const isActive = mode === option;
