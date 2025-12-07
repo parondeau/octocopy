@@ -24,7 +24,6 @@ type TokenResponse =
 type Body = {
   owner?: string
   repo?: string
-  installationId?: number
 }
 
 export const Route = createFileRoute('/api/github-app-token')({
@@ -66,10 +65,10 @@ export const Route = createFileRoute('/api/github-app-token')({
 
         const body = (await safeJson<Body>(request)) ?? {}
 
-        if (!body.installationId && (!body.owner || !body.repo)) {
+        if (!body.owner || !body.repo) {
           return json(
             {
-              error: 'Missing installationId or owner/repo.',
+              error: 'Missing owner/repo.',
             } satisfies TokenResponse,
             { status: 400, headers: corsHeaders },
           )
@@ -81,9 +80,11 @@ export const Route = createFileRoute('/api/github-app-token')({
             privateKey: normalizePrivateKey(requiredEnv.privateKey!),
           })
 
-          const installationId =
-            body.installationId ??
-            (await findInstallationId(auth, body.owner!, body.repo!))
+          const installationId = await findInstallationId(
+            auth,
+            body.owner,
+            body.repo,
+          )
 
           if (!installationId) {
             return json(

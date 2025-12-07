@@ -6,10 +6,18 @@ import { useStoredState } from "./hooks/useStoredState";
 import type { Mode, PlatformSettings } from "./types";
 
 const MODE_OPTIONS = {
+  app: {
+    title: "GitHub App",
+    summary:
+      "Recommended. Uses the Octocopy backend to mint short-lived tokens.",
+    highlights: [
+      "Works across orgs where the app is installed",
+      "Automatic rate limiting + audit trail",
+    ],
+  },
   token: {
     title: "Personal Access Token",
-    summary:
-      "Recommended. Bring your own PAT when you cannot install the GitHub App.",
+    summary: "Bring your own PAT when you cannot install the GitHub App.",
     highlights: [
       "Stored locally only",
       "Requires repo + read:org scopes for private repos",

@@ -16,19 +16,21 @@ const badgeBase =
   "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold";
 
 export function CredentialsSection({
-  mode,
-  tokenValue,
-  tokenStatus,
+  appStatus,
   detectedSite,
-  onValidateToken,
+  mode,
+  tokenStatus,
+  tokenValue,
+  onRefreshApp,
   onTokenChange,
+  onValidateToken,
 }: Props) {
   return (
     <section className={sectionCardClass}>
       <h2 className="text-base font-semibold text-slate-900">
         Credentials &amp; configuration
       </h2>
-      {/* {mode === "app" && (
+      {mode === "app" && (
         <>
           <p className="text-sm text-slate-600">
             Connect the popup to the Octocopy API so we can mint short-lived
@@ -53,7 +55,7 @@ export function CredentialsSection({
             <code className="font-mono text-[11px]">apps/web</code>.
           </p>
         </>
-      )} */}
+      )}
 
       {mode === "token" && (
         <>
