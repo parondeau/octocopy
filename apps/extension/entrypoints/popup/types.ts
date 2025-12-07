@@ -1,5 +1,4 @@
 export type Mode = 'app' | 'token' | 'ui';
-export type Format = 'rich' | 'markdown' | 'plain';
 
 export type OnboardingStep = {
   id: string;
@@ -12,5 +11,4 @@ export type OnboardingStep = {
 export type PlatformSettings = {
   github: boolean;
   graphite: boolean;
-  format: Format;
 };

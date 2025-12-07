@@ -3,7 +3,7 @@ import { CredentialsSection } from "./components/CredentialsSection";
 import { ModeSection } from "./components/ModeSection";
 import { PlatformsSection } from "./components/PlatformsSection";
 import { useStoredState } from "./hooks/useStoredState";
-import type { Format, Mode, PlatformSettings } from "./types";
+import type { Mode, PlatformSettings } from "./types";
 
 const MODE_OPTIONS: Record<
   Mode,
@@ -34,16 +34,9 @@ const MODE_OPTIONS: Record<
   },
 };
 
-const FORMAT_LABELS: Record<Format, string> = {
-  rich: "Rich Text",
-  markdown: "Markdown",
-  plain: "Plain Text",
-};
-
 const defaultPlatforms: PlatformSettings = {
   github: true,
   graphite: true,
-  format: "rich",
 };
 
 function App() {
@@ -94,13 +87,6 @@ function App() {
     }));
   };
 
-  const handleFormatChange = (format: Format) => {
-    setPlatforms((prev) => ({
-      ...prev,
-      format,
-    }));
-  };
-
   const handleTokenChange = (value: string) => {
     setTokenValue(value);
     setTokenStatus("idle");
@@ -148,9 +134,7 @@ function App() {
 
       <PlatformsSection
         platforms={platforms}
-        formatLabels={FORMAT_LABELS}
         onToggle={handlePlatformToggle}
-        onFormatChange={handleFormatChange}
       />
     </div>
   );

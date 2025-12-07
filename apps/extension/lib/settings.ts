@@ -10,7 +10,6 @@ const DEFAULT_MODE: Mode = "ui";
 const DEFAULT_PLATFORMS: PlatformSettings = {
   github: true,
   graphite: true,
-  format: "rich",
 };
 
 const STORAGE_KEYS = {
@@ -38,8 +37,6 @@ export async function loadExtensionSettings(): Promise<ExtensionSettings> {
     readValue<PlatformSettings>(area, STORAGE_KEYS.platforms),
     readValue<string>(area, STORAGE_KEYS.token),
   ]);
-
-  console.log("Loading extension settings: ", { mode, platforms });
 
   return {
     mode: isValidMode(mode) ? mode : DEFAULT_MODE,
@@ -105,10 +102,7 @@ function isValidPlatforms(value: unknown): value is PlatformSettings {
   const candidate = value as PlatformSettings;
   return (
     typeof candidate.github === "boolean" &&
-    typeof candidate.graphite === "boolean" &&
-    (candidate.format === "rich" ||
-      candidate.format === "markdown" ||
-      candidate.format === "plain")
+    typeof candidate.graphite === "boolean"
   );
 }
 
