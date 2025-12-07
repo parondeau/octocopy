@@ -9,14 +9,11 @@ const MODE_OPTIONS: Record<
   Mode,
   { title: string; summary: string; highlights: string[] }
 > = {
-  app: {
-    title: "GitHub App",
+  ui: {
+    title: "UI-only",
     summary:
-      "Recommended. Uses the Octocopy backend to mint short-lived tokens.",
-    highlights: [
-      "Works across orgs where the app is installed",
-      "Automatic rate limiting + audit trail",
-    ],
+      "Recommended. No credentials. We parse the DOM of the current page to assemble PR stats.",
+    highlights: ["Great for read-only access", "Limited to visible PR info"],
   },
   token: {
     title: "Personal Token",
@@ -26,11 +23,13 @@ const MODE_OPTIONS: Record<
       "Requires repo + read:org scopes for private repos",
     ],
   },
-  ui: {
-    title: "UI-only",
-    summary:
-      "No credentials. We parse the DOM of the current page to assemble PR stats.",
-    highlights: ["Great for read-only access", "Limited to visible PR info"],
+  app: {
+    title: "GitHub App",
+    summary: "Uses the Octocopy backend to mint short-lived tokens.",
+    highlights: [
+      "Works across orgs where the app is installed",
+      "Automatic rate limiting + audit trail",
+    ],
   },
 };
 
@@ -132,10 +131,7 @@ function App() {
         onTokenChange={handleTokenChange}
       />
 
-      <PlatformsSection
-        platforms={platforms}
-        onToggle={handlePlatformToggle}
-      />
+      <PlatformsSection platforms={platforms} onToggle={handlePlatformToggle} />
     </div>
   );
 }
