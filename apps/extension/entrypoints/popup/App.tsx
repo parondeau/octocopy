@@ -80,11 +80,26 @@ function App() {
     );
   }, []);
 
+  useEffect(() => {
+    if (!platforms.github && !platforms.graphite) {
+      setPlatforms(defaultPlatforms);
+    }
+  }, [platforms, setPlatforms]);
+
   const handlePlatformToggle = (name: "github" | "graphite") => {
-    setPlatforms((prev) => ({
-      ...prev,
-      [name]: !prev[name],
-    }));
+    setPlatforms((prev) => {
+      const nextValue = !prev[name];
+      if (!nextValue) {
+        const otherPlatform = name === "github" ? prev.graphite : prev.github;
+        if (!otherPlatform) {
+          return prev;
+        }
+      }
+      return {
+        ...prev,
+        [name]: nextValue,
+      };
+    });
   };
 
   const handleTokenChange = (value: string) => {
