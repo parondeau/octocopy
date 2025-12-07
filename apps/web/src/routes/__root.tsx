@@ -1,14 +1,4 @@
-import { TanStackDevtools } from '@tanstack/react-devtools'
-import {
-  HeadContent,
-  Scripts,
-  createRootRouteWithContext,
-} from '@tanstack/react-router'
-import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
-
-import Header from '../components/Header'
-
-import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+import { HeadContent, Link, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
 
@@ -29,7 +19,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Octocopy',
       },
     ],
     links: [
@@ -49,23 +39,39 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
-        <Header />
-        {children}
-        <TanStackDevtools
-          config={{
-            position: 'bottom-right',
-          }}
-          plugins={[
-            {
-              name: 'Tanstack Router',
-              render: <TanStackRouterDevtoolsPanel />,
-            },
-            TanStackQueryDevtools,
-          ]}
-        />
+      <body className="bg-slate-950 text-slate-100 antialiased">
+        <SiteHeader />
+        <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 py-12">
+          {children}
+        </main>
         <Scripts />
       </body>
     </html>
+  )
+}
+
+function SiteHeader() {
+  return (
+    <header className="border-b border-slate-900/70 bg-slate-950/90 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+        <Link
+          to="/"
+          className="text-lg font-semibold tracking-tight text-white hover:text-cyan-300"
+        >
+          Octocopy
+        </Link>
+        <nav className="flex items-center gap-6 text-sm font-medium">
+          <Link
+            to="/docs"
+            className="text-slate-300 transition-colors hover:text-white"
+            activeProps={{
+              className: 'text-white underline underline-offset-4',
+            }}
+          >
+            Docs
+          </Link>
+        </nav>
+      </div>
+    </header>
   )
 }
