@@ -9,6 +9,7 @@
         "dist/**",
         "dist-ssr/**",
         ".output/**",
+        ".vercel/output/**",
         ".nitro/**",
         ".tanstack/**",
         ".vinxi/**",
