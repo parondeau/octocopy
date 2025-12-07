@@ -7,6 +7,12 @@ export const Route = createFileRoute('/docs/')({
 function DocsIndex() {
   const docs = [
     {
+      title: 'Install the GitHub App',
+      description:
+        'Authorize the Octocopy GitHub App for your org or user account and choose which repositories it can manage.',
+      href: '/docs/install-github-app',
+    },
+    {
       title: 'Personal Access Token',
       description:
         'Generate a fine-grained PAT for Octocopy and scope it for repository copy workflows.',

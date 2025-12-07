@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsPersonalAccessTokenRouteImport } from './routes/docs/personal-access-token'
+import { Route as DocsInstallGithubAppRouteImport } from './routes/docs/install-github-app'
 import { Route as ApiGithubAppTokenRouteImport } from './routes/api/github-app-token'
 
 const IndexRoute = IndexRouteImport.update({
@@ -29,6 +30,11 @@ const DocsPersonalAccessTokenRoute = DocsPersonalAccessTokenRouteImport.update({
   path: '/docs/personal-access-token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsInstallGithubAppRoute = DocsInstallGithubAppRouteImport.update({
+  id: '/docs/install-github-app',
+  path: '/docs/install-github-app',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiGithubAppTokenRoute = ApiGithubAppTokenRouteImport.update({
   id: '/api/github-app-token',
   path: '/api/github-app-token',
@@ -38,12 +44,14 @@ const ApiGithubAppTokenRoute = ApiGithubAppTokenRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/github-app-token': typeof ApiGithubAppTokenRoute
+  '/docs/install-github-app': typeof DocsInstallGithubAppRoute
   '/docs/personal-access-token': typeof DocsPersonalAccessTokenRoute
   '/docs': typeof DocsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/github-app-token': typeof ApiGithubAppTokenRoute
+  '/docs/install-github-app': typeof DocsInstallGithubAppRoute
   '/docs/personal-access-token': typeof DocsPersonalAccessTokenRoute
   '/docs': typeof DocsIndexRoute
 }
@@ -51,6 +59,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/github-app-token': typeof ApiGithubAppTokenRoute
+  '/docs/install-github-app': typeof DocsInstallGithubAppRoute
   '/docs/personal-access-token': typeof DocsPersonalAccessTokenRoute
   '/docs/': typeof DocsIndexRoute
 }
@@ -59,14 +68,21 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/api/github-app-token'
+    | '/docs/install-github-app'
     | '/docs/personal-access-token'
     | '/docs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/github-app-token' | '/docs/personal-access-token' | '/docs'
+  to:
+    | '/'
+    | '/api/github-app-token'
+    | '/docs/install-github-app'
+    | '/docs/personal-access-token'
+    | '/docs'
   id:
     | '__root__'
     | '/'
     | '/api/github-app-token'
+    | '/docs/install-github-app'
     | '/docs/personal-access-token'
     | '/docs/'
   fileRoutesById: FileRoutesById
@@ -74,6 +90,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiGithubAppTokenRoute: typeof ApiGithubAppTokenRoute
+  DocsInstallGithubAppRoute: typeof DocsInstallGithubAppRoute
   DocsPersonalAccessTokenRoute: typeof DocsPersonalAccessTokenRoute
   DocsIndexRoute: typeof DocsIndexRoute
 }
@@ -101,6 +118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsPersonalAccessTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/install-github-app': {
+      id: '/docs/install-github-app'
+      path: '/docs/install-github-app'
+      fullPath: '/docs/install-github-app'
+      preLoaderRoute: typeof DocsInstallGithubAppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/github-app-token': {
       id: '/api/github-app-token'
       path: '/api/github-app-token'
@@ -114,6 +138,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiGithubAppTokenRoute: ApiGithubAppTokenRoute,
+  DocsInstallGithubAppRoute: DocsInstallGithubAppRoute,
   DocsPersonalAccessTokenRoute: DocsPersonalAccessTokenRoute,
   DocsIndexRoute: DocsIndexRoute,
 }
