@@ -1,4 +1,9 @@
-import { HeadContent, Link, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Link,
+  Scripts,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 
 import appCss from '../styles.css?url'
 
@@ -69,6 +74,24 @@ function SiteHeader() {
             }}
           >
             Docs
+          </Link>
+          <Link
+            to="/terms"
+            className="text-slate-300 transition-colors hover:text-white"
+            activeProps={{
+              className: 'text-white underline underline-offset-4',
+            }}
+          >
+            Terms
+          </Link>
+          <Link
+            to="/privacy"
+            className="text-slate-300 transition-colors hover:text-white"
+            activeProps={{
+              className: 'text-white underline underline-offset-4',
+            }}
+          >
+            Privacy
           </Link>
         </nav>
       </div>

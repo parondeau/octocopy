@@ -23,7 +23,7 @@ function LandingPage() {
 
   return (
     <section className="flex flex-col gap-12">
-      <div className="rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 to-slate-950 p-10 shadow-2xl shadow-cyan-900/20">
+      <div className="rounded-3xl border border-slate-800 bg-linear-to-br from-slate-900 to-slate-950 p-10 shadow-2xl shadow-cyan-900/20">
         <p className="text-sm uppercase tracking-[0.35em] text-cyan-300/60">
           Octocopy
         </p>

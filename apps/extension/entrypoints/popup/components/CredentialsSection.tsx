@@ -63,7 +63,7 @@ export function CredentialsSection({
             Paste a classic PAT with <code>repo</code> + <code>read:org</code>{" "}
             scopes to fetch private PR data.
             <a
-              href="https://octocopy-web.vercel.app/docs/personal-access-token"
+              href="https://octocopy.app/docs/personal-access-token"
               className="ml-1 text-indigo-600 underline hover:text-indigo-500"
               target="_blank"
               rel="noreferrer"
