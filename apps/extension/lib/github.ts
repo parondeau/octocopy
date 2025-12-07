@@ -16,11 +16,25 @@ type TokenCacheEntry = {
 
 const tokenCache = new Map<string, TokenCacheEntry>();
 
-export async function fetchPullRequest(
+export async function fetchPullRequestWithApp(
   pr: PullRequestLocation
 ): Promise<PullRequestData | null> {
   const token = await getAccessToken(pr);
+  return requestPullRequest(pr, token);
+}
 
+export async function fetchPullRequestWithToken(
+  pr: PullRequestLocation,
+  token: string
+): Promise<PullRequestData | null> {
+  if (!token) return null;
+  return requestPullRequest(pr, token);
+}
+
+async function requestPullRequest(
+  pr: PullRequestLocation,
+  token: string | null
+): Promise<PullRequestData | null> {
   const octokit = new Octokit({
     auth: token ?? undefined,
     userAgent: "Octocopy-Extension",

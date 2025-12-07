@@ -1,13 +1,40 @@
-import { fetchPullRequest } from "./github";
 import { buildCopyPayload, copyToClipboard } from "./clipboard";
-import type { PullRequestLocation } from "./pull-request";
+import { fetchPullRequestWithApp, fetchPullRequestWithToken } from "./github";
+import { scrapePullRequestFromDom } from "./github-ui";
+import type { PullRequestData, PullRequestLocation } from "./pull-request";
+import { loadExtensionSettings } from "./settings";
 
 export async function copyPullRequest(pr: PullRequestLocation) {
-  const data = await fetchPullRequest(pr);
+  const settings = await loadExtensionSettings();
+  console.log(settings);
+  const data = await resolvePullRequestData(pr, settings.mode, settings.token);
   if (!data) {
     throw new Error("Unable to load PR details.");
   }
 
   const payload = buildCopyPayload(pr, data);
   await copyToClipboard(payload);
+}
+
+async function resolvePullRequestData(
+  pr: PullRequestLocation,
+  mode: "app" | "token" | "ui",
+  token: string
+): Promise<PullRequestData | null> {
+  switch (mode) {
+    case "token": {
+      const trimmed = token.trim();
+      if (!trimmed) {
+        throw new Error(
+          "Add a personal access token in the Octocopy popup before copying."
+        );
+      }
+      return fetchPullRequestWithToken(pr, trimmed);
+    }
+    case "ui":
+      return scrapePullRequestFromDom(pr);
+    case "app":
+    default:
+      return fetchPullRequestWithApp(pr);
+  }
 }

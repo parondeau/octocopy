@@ -1,27 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { CredentialsSection } from "./components/CredentialsSection";
 import { ModeSection } from "./components/ModeSection";
-import { OnboardingSection } from "./components/OnboardingSection";
 import { PlatformsSection } from "./components/PlatformsSection";
 import { useStoredState } from "./hooks/useStoredState";
-import type { Format, Mode, OnboardingStep, PlatformSettings } from "./types";
-
-const ONBOARDING_STEPS: OnboardingStep[] = [
-  {
-    id: "install-app",
-    label: "Install the Octocopy GitHub App",
-    description:
-      "The app lets us mint scoped tokens from the web service so the extension never stores your GitHub password.",
-    actionLabel: "Open install page",
-    actionHref: "https://github.com/apps/octocopy",
-  },
-  {
-    id: "choose-mode",
-    label: "Pick a runtime mode",
-    description:
-      "Choose GitHub App, Personal Token, or UI-only mode so we know how to fetch PR stats.",
-  },
-];
+import type { Format, Mode, PlatformSettings } from "./types";
 
 const MODE_OPTIONS: Record<
   Mode,
@@ -58,11 +40,6 @@ const FORMAT_LABELS: Record<Format, string> = {
   plain: "Plain Text",
 };
 
-const defaultOnboardingState = ONBOARDING_STEPS.reduce(
-  (acc, step) => ({ ...acc, [step.id]: false }),
-  {} as Record<string, boolean>
-);
-
 const defaultPlatforms: PlatformSettings = {
   github: true,
   graphite: true,
@@ -70,10 +47,6 @@ const defaultPlatforms: PlatformSettings = {
 };
 
 function App() {
-  const [onboardingState, setOnboardingState] = useStoredState(
-    "octocopy-onboarding",
-    defaultOnboardingState
-  );
   const [mode, setMode] = useStoredState<Mode>("octocopy-mode", "app");
   const [platforms, setPlatforms] = useStoredState(
     "octocopy-platforms",
@@ -88,11 +61,6 @@ function App() {
     "idle" | "validating" | "valid" | "invalid"
   >("idle");
   const [detectedSite, setDetectedSite] = useState<string | null>(null);
-
-  const completionCount = useMemo(
-    () => Object.values(onboardingState).filter(Boolean).length,
-    [onboardingState]
-  );
 
   useEffect(() => {
     const chromeApi = (globalThis as typeof globalThis & { chrome?: any })
@@ -118,13 +86,6 @@ function App() {
       }
     );
   }, []);
-
-  const handleToggleOnboarding = (id: string) => {
-    setOnboardingState((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   const handlePlatformToggle = (name: "github" | "graphite") => {
     setPlatforms((prev) => ({
@@ -171,13 +132,6 @@ function App() {
           Configure how the extension fetches PR stats before copying.
         </p>
       </header>
-
-      <OnboardingSection
-        steps={ONBOARDING_STEPS}
-        state={onboardingState}
-        completionCount={completionCount}
-        onToggle={handleToggleOnboarding}
-      />
 
       <ModeSection mode={mode} options={MODE_OPTIONS} onChange={setMode} />
 

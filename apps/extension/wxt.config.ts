@@ -10,7 +10,7 @@ export default defineConfig({
   manifest: {
     name: 'Octocopy',
     description: 'Copy GitHub PR details into your clipboard.',
-    permissions: ['clipboardWrite'],
+    permissions: ['clipboardWrite', 'storage'],
     host_permissions: [
       'https://github.com/*',
       'https://api.github.com/*',
