@@ -52,8 +52,7 @@ function createButton(pr: PullRequestLocation) {
   const button = document.createElement("button");
   button.id = BUTTON_ID;
   button.type = "button";
-  button.className = "btn btn-sm btn-primary";
-  button.style.marginLeft = "8px";
+  button.className = "Button Button--secondary Button--small flex-order-2";
   button.textContent = "Copy PR";
   button.dataset.pr = serializePullRequest(pr);
 

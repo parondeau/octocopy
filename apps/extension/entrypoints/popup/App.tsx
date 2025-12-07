@@ -9,19 +9,20 @@ const MODE_OPTIONS: Record<
   Mode,
   { title: string; summary: string; highlights: string[] }
 > = {
-  ui: {
-    title: "UI-only",
-    summary:
-      "Recommended. No credentials. We parse the DOM of the current page to assemble PR stats.",
-    highlights: ["Great for read-only access", "Limited to visible PR info"],
-  },
   token: {
-    title: "Personal Token",
-    summary: "Bring your own PAT when you cannot install the GitHub App.",
+    title: "Personal Access Token",
+    summary:
+      "Recommended. Bring your own PAT when you cannot install the GitHub App.",
     highlights: [
       "Stored locally only",
       "Requires repo + read:org scopes for private repos",
     ],
+  },
+  ui: {
+    title: "UI-only",
+    summary:
+      "No credentials. We parse the DOM of the current page to assemble PR stats.",
+    highlights: ["Great for read-only access", "Limited to visible PR info"],
   },
   app: {
     title: "GitHub App",
