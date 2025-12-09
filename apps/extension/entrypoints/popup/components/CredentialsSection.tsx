@@ -4,10 +4,8 @@ import { cx, secondaryButton, sectionCardClass, statusTone } from "./ui";
 type Props = {
   mode: Mode;
   tokenValue: string;
-  appStatus: "disconnected" | "checking" | "connected";
   tokenStatus: "idle" | "validating" | "valid" | "invalid";
   detectedSite: string | null;
-  onRefreshApp: () => void;
   onValidateToken: () => void;
   onTokenChange: (value: string) => void;
 };
@@ -16,12 +14,10 @@ const badgeBase =
   "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold";
 
 export function CredentialsSection({
-  appStatus,
   detectedSite,
   mode,
   tokenStatus,
   tokenValue,
-  onRefreshApp,
   onTokenChange,
   onValidateToken,
 }: Props) {
@@ -36,19 +32,6 @@ export function CredentialsSection({
             Connect the popup to the Octocopy API so we can mint short-lived
             GitHub tokens on demand.
           </p>
-          <div className="flex items-center justify-between text-sm text-slate-600">
-            <span>Status:</span>
-            <span className={cx(badgeBase, statusTone[appStatus])}>
-              {appStatus === "checking"
-                ? "Checking…"
-                : appStatus === "connected"
-                  ? "Connected"
-                  : "Disconnected"}
-            </span>
-          </div>
-          <button className={secondaryButton} onClick={onRefreshApp}>
-            Refresh app connection
-          </button>
           <p className="text-xs text-slate-500">
             We only cache installation IDs locally. Tokens are minted
             server-side via{" "}

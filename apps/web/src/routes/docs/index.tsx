@@ -18,6 +18,12 @@ function DocsIndex() {
         'Generate a fine-grained PAT for Octocopy and scope it for repository copy workflows.',
       href: '/docs/personal-access-token',
     },
+    {
+      title: 'UI-only Mode',
+      description:
+        'Keep the extension fully local by letting it read PR titles and diff stats straight from the page.',
+      href: '/docs/ui-mode',
+    },
   ]
 
   return (

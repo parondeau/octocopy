@@ -6,6 +6,12 @@ import { useStoredState } from "./hooks/useStoredState";
 import type { Mode, PlatformSettings } from "./types";
 
 const MODE_OPTIONS = {
+  ui: {
+    title: "UI-only",
+    summary:
+      "Recommended. No credentials. We parse the DOM of the current page to assemble PR stats.",
+    highlights: ["Great for read-only access", "Limited to visible PR info"],
+  },
   app: {
     title: "GitHub App",
     summary:
@@ -23,12 +29,6 @@ const MODE_OPTIONS = {
       "Requires repo + read:org scopes for private repos",
     ],
   },
-  ui: {
-    title: "UI-only",
-    summary:
-      "No credentials. We parse the DOM of the current page to assemble PR stats.",
-    highlights: ["Great for read-only access", "Limited to visible PR info"],
-  },
 };
 
 const defaultPlatforms: PlatformSettings = {
@@ -44,9 +44,6 @@ function App() {
   );
   const [tokenValue, setTokenValue] = useStoredState("octocopy-token", "");
 
-  const [appStatus, setAppStatus] = useState<
-    "disconnected" | "checking" | "connected"
-  >("disconnected");
   const [tokenStatus, setTokenStatus] = useState<
     "idle" | "validating" | "valid" | "invalid"
   >("idle");
@@ -104,13 +101,6 @@ function App() {
     setTokenStatus("idle");
   };
 
-  const handleAppRefresh = () => {
-    setAppStatus("checking");
-    window.setTimeout(() => {
-      setAppStatus("connected");
-    }, 600);
-  };
-
   const handleValidateToken = () => {
     setTokenStatus("validating");
     window.setTimeout(() => {
@@ -136,10 +126,8 @@ function App() {
       <CredentialsSection
         mode={mode}
         tokenValue={tokenValue}
-        appStatus={appStatus}
         tokenStatus={tokenStatus}
         detectedSite={detectedSite}
-        onRefreshApp={handleAppRefresh}
         onValidateToken={handleValidateToken}
         onTokenChange={handleTokenChange}
       />
