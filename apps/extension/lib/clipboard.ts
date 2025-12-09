@@ -6,7 +6,7 @@ export type CopyPayload = {
   html: string;
 };
 
-const GRAPHITE_BASE_URL = "https://graphite.com";
+const GRAPHITE_BASE_URL = "https://app.graphite.com/github/pr";
 
 export function buildCopyPayload(
   pr: PullRequestLocation,
@@ -22,7 +22,7 @@ export function buildCopyPayload(
   if (platforms.graphite) {
     links.push({
       label: "graphite",
-      url: `${GRAPHITE_BASE_URL}/${pr.owner}/${pr.repo}/pull/${pr.number}`,
+      url: `${GRAPHITE_BASE_URL}/${pr.owner}/${pr.repo}/${pr.number}`,
     });
   }
 

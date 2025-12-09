@@ -3,10 +3,17 @@ import { Octokit } from "@octokit/core";
 import type { PullRequestData, PullRequestLocation } from "./pull-request";
 
 const API_BASE_URL: string = import.meta.env.VITE_OCTOCOPY_API_BASE_URL;
-const EXTENSION_API_KEY = import.meta.env.VITE_OCTOCOPY_EXTENSION_API_KEY;
+const EXTENSION_API_KEY: string = import.meta.env
+  .VITE_OCTOCOPY_EXTENSION_API_KEY;
 
 if (!API_BASE_URL) {
   throw new Error("Missing VITE_OCTOCOPY_API_BASE_URL environment variable");
+}
+
+if (!EXTENSION_API_KEY) {
+  throw new Error(
+    "Missing VITE_OCTOCOPY_EXTENSION_API_KEY environment variable"
+  );
 }
 
 type TokenCacheEntry = {
@@ -107,9 +114,7 @@ async function requestAccessToken(pr: PullRequestLocation): Promise<{
     "Content-Type": "application/json",
   };
 
-  if (EXTENSION_API_KEY) {
-    headers["x-octocopy-key"] = EXTENSION_API_KEY;
-  }
+  headers["x-octocopy-key"] = EXTENSION_API_KEY;
 
   try {
     const response = await fetch(`${API_BASE_URL}/github-app-token`, {
