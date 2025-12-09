@@ -1,3 +1,4 @@
-//  @ts-check
+import { tanstackConfig } from "@tanstack/eslint-config";
+import { config as baseConfig } from "./base.js";
 
-export { tanstackConfig } from "@tanstack/eslint-config";
+export const config = [...baseConfig, ...tanstackConfig];

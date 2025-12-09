@@ -43,10 +43,12 @@ function PersonalAccessTokenDoc() {
       </section>
 
       <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6">
-        <h2 className="text-lg font-semibold text-white">Permissions required</h2>
+        <h2 className="text-lg font-semibold text-white">
+          Permissions required
+        </h2>
         <p className="mt-2 text-sm text-slate-300">
-          Octocopy needs read access so it can inspect repositories and summarize copy work. Keep
-          everything else disabled.
+          Octocopy needs read access so it can inspect repositories and
+          summarize copy work. Keep everything else disabled.
         </p>
         <ul className="mt-4 space-y-3 text-sm text-slate-200">
           <li className="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-900/70 px-4 py-3">
@@ -63,9 +65,17 @@ function PersonalAccessTokenDoc() {
       <section className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-5 text-amber-100">
         <h2 className="text-lg font-semibold">Security notes</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-amber-50/80 sm:text-base">
-          <li>Rotate tokens as part of your onboarding/offboarding checklist.</li>
-          <li>Store the PAT in 1Password, Secrets Manager, or another encrypted vault.</li>
-          <li>Prefer the Octocopy GitHub App for automation; tokens are best for single operators.</li>
+          <li>
+            Rotate tokens as part of your onboarding/offboarding checklist.
+          </li>
+          <li>
+            Store the PAT in 1Password, Secrets Manager, or another encrypted
+            vault.
+          </li>
+          <li>
+            Prefer the Octocopy GitHub App for automation; tokens are best for
+            single operators.
+          </li>
         </ul>
       </section>
     </article>

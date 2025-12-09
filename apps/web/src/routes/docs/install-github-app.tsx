@@ -52,7 +52,9 @@ function InstallGithubAppDoc() {
       </section>
 
       <section className="rounded-2xl border border-slate-800 bg-slate-900/50 p-6 text-slate-200">
-        <h2 className="text-lg font-semibold text-white">Repository access tips</h2>
+        <h2 className="text-lg font-semibold text-white">
+          Repository access tips
+        </h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm sm:text-base">
           {accessTips.map((tip) => (
             <li key={tip}>{tip}</li>

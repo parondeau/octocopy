@@ -27,6 +27,12 @@ export const config = [
     },
   },
   {
-    ignores: ["dist/**"],
+    ignores: [
+      "dist/**",
+      ".output/**",
+      ".vercel/**",
+      "eslint.config.js",
+      "prettier.config.js",
+    ],
   },
 ];

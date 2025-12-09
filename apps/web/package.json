@@ -2,13 +2,14 @@
   "name": "@octocopy/web",
   "private": true,
   "type": "module",
+  "license": "MIT",
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "serve": "vite preview",
     "test": "vitest run",
     "lint": "eslint",
-    "format": "prettier",
+    "format": "prettier --write .",
     "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {
