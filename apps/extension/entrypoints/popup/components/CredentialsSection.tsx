@@ -1,26 +1,13 @@
 import type { Mode } from "../types";
-import { cx, secondaryButton, sectionCardClass, statusTone } from "./ui";
+import { sectionCardClass } from "./ui";
 
 type Props = {
   mode: Mode;
   tokenValue: string;
-  tokenStatus: "idle" | "validating" | "valid" | "invalid";
-  detectedSite: string | null;
-  onValidateToken: () => void;
   onTokenChange: (value: string) => void;
 };
 
-const badgeBase =
-  "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold";
-
-export function CredentialsSection({
-  detectedSite,
-  mode,
-  tokenStatus,
-  tokenValue,
-  onTokenChange,
-  onValidateToken,
-}: Props) {
+export function CredentialsSection({ mode, tokenValue, onTokenChange }: Props) {
   return (
     <section className={sectionCardClass}>
       <h2 className="text-base font-semibold text-slate-900">
@@ -65,17 +52,6 @@ export function CredentialsSection({
               onChange={(event) => onTokenChange(event.target.value)}
             />
           </label>
-          <div className="flex items-center justify-between gap-3 text-sm text-slate-600">
-            <button className={secondaryButton} onClick={onValidateToken}>
-              Validate token
-            </button>
-            <span className={cx(badgeBase, statusTone[tokenStatus])}>
-              {tokenStatus === "idle" && "Not validated"}
-              {tokenStatus === "validating" && "Validating…"}
-              {tokenStatus === "valid" && "Looks good"}
-              {tokenStatus === "invalid" && "Check token"}
-            </span>
-          </div>
           <p className="text-xs text-slate-500">
             Tokens never leave your browser; we store them securely locally.
           </p>
@@ -86,15 +62,8 @@ export function CredentialsSection({
         <>
           <p className="text-sm text-slate-600">
             UI-only mode inspects DOM nodes from the current tab to assemble PR
-            stats. Great for locked-down orgs, but data is limited to what the
-            UI shows.
+            stats.
           </p>
-          <div className="flex items-center justify-between text-sm text-slate-600">
-            <span>Detected site:</span>
-            <span className={cx(badgeBase, statusTone.neutral)}>
-              {detectedSite ?? "Unknown"}
-            </span>
-          </div>
           <p className="text-xs text-slate-500">
             Some layouts (Graphite, custom GitHub themes) may hide data we need.
             We will surface fallback prompts if parsing fails.

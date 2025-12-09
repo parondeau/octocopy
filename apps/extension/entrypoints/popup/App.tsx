@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { CredentialsSection } from "./components/CredentialsSection";
 import { ModeSection } from "./components/ModeSection";
 import { PlatformsSection } from "./components/PlatformsSection";
@@ -44,36 +44,6 @@ function App() {
   );
   const [tokenValue, setTokenValue] = useStoredState("octocopy-token", "");
 
-  const [tokenStatus, setTokenStatus] = useState<
-    "idle" | "validating" | "valid" | "invalid"
-  >("idle");
-  const [detectedSite, setDetectedSite] = useState<string | null>(null);
-
-  useEffect(() => {
-    const chromeApi = (globalThis as typeof globalThis & { chrome?: any })
-      .chrome;
-    if (!chromeApi?.tabs?.query) {
-      setDetectedSite(null);
-      return;
-    }
-    chromeApi.tabs.query(
-      { active: true, currentWindow: true },
-      (tabs: Array<{ url?: string }>) => {
-        const [tab] = tabs;
-        if (!tab?.url) {
-          setDetectedSite(null);
-          return;
-        }
-        try {
-          const url = new URL(tab.url);
-          setDetectedSite(url.hostname);
-        } catch {
-          setDetectedSite(null);
-        }
-      }
-    );
-  }, []);
-
   useEffect(() => {
     if (!platforms.github && !platforms.graphite) {
       setPlatforms(defaultPlatforms);
@@ -98,18 +68,6 @@ function App() {
 
   const handleTokenChange = (value: string) => {
     setTokenValue(value);
-    setTokenStatus("idle");
-  };
-
-  const handleValidateToken = () => {
-    setTokenStatus("validating");
-    window.setTimeout(() => {
-      const nextStatus =
-        tokenValue.trim().startsWith("ghp_") || tokenValue.trim().length > 15
-          ? "valid"
-          : "invalid";
-      setTokenStatus(nextStatus);
-    }, 600);
   };
 
   return (
@@ -126,9 +84,6 @@ function App() {
       <CredentialsSection
         mode={mode}
         tokenValue={tokenValue}
-        tokenStatus={tokenStatus}
-        detectedSite={detectedSite}
-        onValidateToken={handleValidateToken}
         onTokenChange={handleTokenChange}
       />
 
