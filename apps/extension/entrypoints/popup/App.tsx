@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { CredentialsSection } from "./components/CredentialsSection";
 import { ModeSection } from "./components/ModeSection";
+import { MessageSection } from "./components/MessageSection";
 import { PlatformsSection } from "./components/PlatformsSection";
 import { useStoredState } from "./hooks/useStoredState";
 import type { Mode, PlatformSettings } from "./types";
@@ -43,6 +44,10 @@ function App() {
     defaultPlatforms
   );
   const [tokenValue, setTokenValue] = useStoredState("octocopy-token", "");
+  const [includeBranchName, setIncludeBranchName] = useStoredState(
+    "octocopy-include-branch",
+    false
+  );
 
   useEffect(() => {
     if (!platforms.github && !platforms.graphite) {
@@ -70,6 +75,10 @@ function App() {
     setTokenValue(value);
   };
 
+  const handleIncludeBranchToggle = (value: boolean) => {
+    setIncludeBranchName(value);
+  };
+
   return (
     <div className="flex min-w-[360px] max-w-[420px] flex-col gap-4 bg-slate-100 p-4 text-slate-900">
       <header>
@@ -88,6 +97,10 @@ function App() {
       />
 
       <PlatformsSection platforms={platforms} onToggle={handlePlatformToggle} />
+      <MessageSection
+        includeBranchName={includeBranchName}
+        onToggle={handleIncludeBranchToggle}
+      />
     </div>
   );
 }

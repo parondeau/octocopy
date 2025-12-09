@@ -8,12 +8,20 @@ export type CopyPayload = {
 
 const GRAPHITE_BASE_URL = "https://app.graphite.com/github/pr";
 
+type PayloadOptions = {
+  platforms: PlatformSettings;
+  includeBranchName: boolean;
+};
+
 export function buildCopyPayload(
   pr: PullRequestLocation,
   data: PullRequestData,
-  platforms: PlatformSettings
+  options: PayloadOptions
 ): CopyPayload {
+  const { platforms, includeBranchName } = options;
   const repoSlug = `${pr.owner}/${pr.repo}`;
+  const branchName =
+    includeBranchName && data.branchName ? data.branchName : null;
 
   const links: Array<{ label: string; url: string }> = [];
   if (platforms.github) {
@@ -39,8 +47,15 @@ export function buildCopyPayload(
   const textSuffix = textLinks ? ` [${textLinks}]` : "";
   const htmlSuffix = htmlLinks ? ` [${htmlLinks}]` : "";
 
-  const text = `[${repoSlug}/${pr.number}]: ${data.title} (+${data.additions}/-${data.deletions})${textSuffix}`;
-  const html = `[${repoSlug}/${pr.number}]: ${escapeHtml(
+  const textPrefix = branchName
+    ? `[${repoSlug}/${pr.number}][${branchName}]`
+    : `[${repoSlug}/${pr.number}]`;
+  const htmlPrefix = branchName
+    ? `[${repoSlug}/${pr.number}][${escapeHtml(branchName)}]`
+    : `[${repoSlug}/${pr.number}]`;
+
+  const text = `${textPrefix}: ${data.title} (+${data.additions}/-${data.deletions})${textSuffix}`;
+  const html = `${htmlPrefix}: ${escapeHtml(
     data.title
   )} (+${data.additions}/-${data.deletions})${htmlSuffix}`;
 

@@ -11,7 +11,10 @@ export async function copyPullRequest(pr: PullRequestLocation) {
     throw new Error("Unable to load PR details.");
   }
 
-  const payload = buildCopyPayload(pr, data, settings.platforms);
+  const payload = buildCopyPayload(pr, data, {
+    platforms: settings.platforms,
+    includeBranchName: settings.includeBranchName,
+  });
   await copyToClipboard(payload);
 }
 

@@ -1,6 +1,10 @@
 import { Octokit } from "@octokit/core";
 
-import type { PullRequestData, PullRequestLocation } from "./pull-request";
+import {
+  normalizeBranchName,
+  type PullRequestData,
+  type PullRequestLocation,
+} from "./pull-request";
 
 const API_BASE_URL: string = import.meta.env.VITE_OCTOCOPY_API_BASE_URL;
 const EXTENSION_API_KEY: string = import.meta.env
@@ -73,6 +77,7 @@ async function requestPullRequest(
       html_url:
         data.html_url ??
         `https://github.com/${pr.owner}/${pr.repo}/pull/${pr.number}`,
+      branchName: normalizeBranchName(data.head?.ref),
     };
   } catch (error) {
     console.warn("Octocopy: GitHub API request failed", error);

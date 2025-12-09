@@ -1,6 +1,7 @@
-import type {
-  PullRequestData,
-  PullRequestLocation,
+import {
+  normalizeBranchName,
+  type PullRequestData,
+  type PullRequestLocation,
 } from "./pull-request";
 
 const TITLE_SELECTORS = [
@@ -22,6 +23,17 @@ const DIFFSTAT_SELECTORS = [
   ".gh-header-meta .color-fg-muted",
 ];
 
+const GITHUB_BRANCH_SELECTORS = [
+  "[data-test-selector='head-ref']",
+  ".gh-header-meta .commit-ref:last-of-type .css-truncate-target",
+  ".commit-ref .css-truncate-target",
+];
+
+const GRAPHITE_BRANCH_SELECTORS = [
+  '[class*="BranchName_branchName__"]',
+  '[class*="BranchReference_branchReference__"]',
+];
+
 export function scrapePullRequestFromDom(
   pr: PullRequestLocation
 ): PullRequestData | null {
@@ -30,12 +42,14 @@ export function scrapePullRequestFromDom(
   if (!title) return null;
 
   const stats = readDiffStats();
+  const branchName = readBranchName(platform, pr);
 
   return {
     title,
     additions: stats.additions,
     deletions: stats.deletions,
     html_url: `https://github.com/${pr.owner}/${pr.repo}/pull/${pr.number}`,
+    branchName,
   };
 }
 
@@ -87,6 +101,67 @@ function detectPlatform(): HostPlatform {
   if (host === "github.com" || host.endsWith(".github.com")) return "github";
   if (host.endsWith("graphite.com")) return "graphite";
   return "other";
+}
+
+function readBranchName(
+  platform: HostPlatform,
+  pr: PullRequestLocation
+): string | undefined {
+  if (platform === "github") {
+    const meta = document.querySelector<HTMLMetaElement>(
+      "meta[name='octolytics-dimension-pr_head_ref']"
+    );
+    const metaValue = normalizeBranchName(meta?.content);
+    if (metaValue) return metaValue;
+  }
+
+  const selectors =
+    platform === "graphite"
+      ? GRAPHITE_BRANCH_SELECTORS
+      : GITHUB_BRANCH_SELECTORS;
+
+  for (const selector of selectors) {
+    const element = document.querySelector<HTMLElement>(selector);
+    if (!element) continue;
+    const value = normalizeBranchName(element.textContent);
+    if (value) return value;
+    const titleValue = normalizeBranchName(element.getAttribute("title"));
+    if (titleValue) return titleValue;
+  }
+
+  return readBranchFromLinks(pr);
+}
+
+function readBranchFromLinks(
+  pr: PullRequestLocation
+): string | undefined {
+  const repoPath = `/${pr.owner}/${pr.repo}`;
+  const anchors = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>("a[href*='/tree/']")
+  );
+
+  for (const anchor of anchors) {
+    const href = anchor.getAttribute("href");
+    if (!href) continue;
+    const url = toAbsoluteUrl(href);
+    if (!url) continue;
+    if (!url.pathname.includes(repoPath)) continue;
+    const match = url.pathname.match(/\/tree\/([^/?#]+)/);
+    if (!match?.[1]) continue;
+    const decoded = decodeURIComponent(match[1]);
+    const normalized = normalizeBranchName(decoded);
+    if (normalized) return normalized;
+  }
+
+  return undefined;
+}
+
+function toAbsoluteUrl(href: string): URL | null {
+  try {
+    return new URL(href, window.location.origin);
+  } catch {
+    return null;
+  }
 }
 
 function readDiffStats(): { additions: number; deletions: number } {

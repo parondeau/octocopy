@@ -4,6 +4,7 @@ export type ExtensionSettings = {
   mode: Mode;
   platforms: PlatformSettings;
   token: string;
+  includeBranchName: boolean;
 };
 
 const DEFAULT_MODE: Mode = "ui";
@@ -11,11 +12,13 @@ const DEFAULT_PLATFORMS: PlatformSettings = {
   github: true,
   graphite: false,
 };
+const DEFAULT_INCLUDE_BRANCH = false;
 
 const STORAGE_KEYS = {
   mode: "octocopy-mode",
   platforms: "octocopy-platforms",
   token: "octocopy-token",
+  includeBranchName: "octocopy-include-branch",
 };
 
 type StorageArea = {
@@ -29,19 +32,25 @@ export async function loadExtensionSettings(): Promise<ExtensionSettings> {
       mode: DEFAULT_MODE,
       platforms: DEFAULT_PLATFORMS,
       token: "",
+      includeBranchName: DEFAULT_INCLUDE_BRANCH,
     };
   }
 
-  const [mode, platforms, token] = await Promise.all([
+  const [mode, platforms, token, includeBranchName] = await Promise.all([
     readValue<Mode>(area, STORAGE_KEYS.mode),
     readValue<PlatformSettings>(area, STORAGE_KEYS.platforms),
     readValue<string>(area, STORAGE_KEYS.token),
+    readValue<boolean>(area, STORAGE_KEYS.includeBranchName),
   ]);
 
   return {
     mode: isValidMode(mode) ? mode : DEFAULT_MODE,
     platforms: isValidPlatforms(platforms) ? platforms : DEFAULT_PLATFORMS,
     token: typeof token === "string" ? token : "",
+    includeBranchName:
+      typeof includeBranchName === "boolean"
+        ? includeBranchName
+        : DEFAULT_INCLUDE_BRANCH,
   };
 }
 

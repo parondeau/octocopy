@@ -9,6 +9,7 @@ export type PullRequestData = {
   additions: number;
   deletions: number;
   html_url: string;
+  branchName?: string;
 };
 
 export function parsePullRequestFromPath(
@@ -58,4 +59,17 @@ export function deserializePullRequest(
     console.error("Octocopy: failed to parse PR data", error);
     return null;
   }
+}
+
+export function normalizeBranchName(
+  raw: string | null | undefined
+): string | undefined {
+  if (!raw) return undefined;
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  const colonIndex = trimmed.indexOf(":");
+  const withoutOwner =
+    colonIndex >= 0 ? trimmed.slice(colonIndex + 1).trim() : trimmed;
+  const normalized = withoutOwner.replace(/\s+/g, " ").trim();
+  return normalized || undefined;
 }
