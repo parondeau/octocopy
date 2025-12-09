@@ -9,7 +9,7 @@ export type ExtensionSettings = {
 const DEFAULT_MODE: Mode = "ui";
 const DEFAULT_PLATFORMS: PlatformSettings = {
   github: true,
-  graphite: true,
+  graphite: false,
 };
 
 const STORAGE_KEYS = {

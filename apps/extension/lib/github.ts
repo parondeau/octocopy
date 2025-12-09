@@ -2,9 +2,12 @@ import { Octokit } from "@octokit/core";
 
 import type { PullRequestData, PullRequestLocation } from "./pull-request";
 
-const API_BASE_URL: string =
-  import.meta.env.VITE_OCTOCOPY_API_BASE_URL || "https://octocopy.app/api";
+const API_BASE_URL: string = import.meta.env.VITE_OCTOCOPY_API_BASE_URL;
 const EXTENSION_API_KEY = import.meta.env.VITE_OCTOCOPY_EXTENSION_API_KEY;
+
+if (!API_BASE_URL) {
+  throw new Error("Missing VITE_OCTOCOPY_API_BASE_URL environment variable");
+}
 
 type TokenCacheEntry = {
   value: string;
