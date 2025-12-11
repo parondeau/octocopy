@@ -20,7 +20,13 @@ const DIFFSTAT_SELECTORS = [
   "[data-component='diffstat']",
   ".diffstat",
   ".gh-header-meta .color-fg-muted",
+  "[class*='FileChangeStats_fileChangeStats__']", // Graphite UI
 ];
+
+const GRAPHITE_ADDITIONS_SELECTOR =
+  "[class*='FileChangeStats_linesAdded__']";
+const GRAPHITE_DELETIONS_SELECTOR =
+  "[class*='FileChangeStats_linesRemoved__']";
 
 export function scrapePullRequestFromDom(
   pr: PullRequestLocation
@@ -112,9 +118,15 @@ function readFromDiffstatSpans(
   element: HTMLElement
 ): { additions: number; deletions: number } | null {
   const additionsText =
-    element.querySelector<HTMLElement>(".color-fg-success")?.textContent ?? "";
+    element.querySelector<HTMLElement>(".color-fg-success")?.textContent ??
+    element.querySelector<HTMLElement>(GRAPHITE_ADDITIONS_SELECTOR)
+      ?.textContent ??
+    "";
   const deletionsText =
-    element.querySelector<HTMLElement>(".color-fg-danger")?.textContent ?? "";
+    element.querySelector<HTMLElement>(".color-fg-danger")?.textContent ??
+    element.querySelector<HTMLElement>(GRAPHITE_DELETIONS_SELECTOR)
+      ?.textContent ??
+    "";
 
   const additions = parseLooseNumber(additionsText);
   const deletions = parseLooseNumber(deletionsText);
