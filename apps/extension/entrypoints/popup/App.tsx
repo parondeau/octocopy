@@ -14,8 +14,7 @@ const MODE_OPTIONS = {
   },
   app: {
     title: "GitHub App",
-    summary:
-      "Recommended. Uses the Octocopy backend to mint short-lived tokens.",
+    summary: "Uses the Octocopy backend to mint short-lived tokens.",
     highlights: [
       "Works across orgs where the app is installed",
       "Automatic rate limiting + audit trail",

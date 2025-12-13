@@ -16,13 +16,22 @@ export function CredentialsSection({ mode, tokenValue, onTokenChange }: Props) {
       {mode === "app" && (
         <>
           <p className="text-sm text-slate-600">
-            Connect the popup to the Octocopy API so we can mint short-lived
+            Install the Github app so the Octocopy API can mint short-lived
             GitHub tokens on demand.
           </p>
           <p className="text-xs text-slate-500">
             We only cache installation IDs locally. Tokens are minted
-            server-side via{" "}
-            <code className="font-mono text-[11px]">apps/web</code>.
+            server-side.{" "}
+          </p>
+          <p>
+            <a
+              href="https://octocopy.app/docs/install-github-app"
+              className="ml-1 text-indigo-600 underline hover:text-indigo-500"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Read the setup guide
+            </a>
           </p>
         </>
       )}
