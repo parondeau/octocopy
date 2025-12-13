@@ -64,7 +64,7 @@ function createButton(pr: PullRequestLocation, platform: TargetPlatform) {
   if (platform === "graphite") {
     styleGraphiteButton(button);
   } else {
-    button.className = "Button Button--secondary Button--small flex-order-2";
+    styleGitHubButton(button);
   }
   setButtonLabel(button, "Copy PR");
 
@@ -76,6 +76,21 @@ function createButton(pr: PullRequestLocation, platform: TargetPlatform) {
   });
 
   return button;
+}
+
+function styleGitHubButton(button: HTMLButtonElement) {
+  button.className = "Button Button--secondary Button--small flex-order-2";
+  const contents = document.createElement("span");
+  contents.style.display = "inline-flex";
+  contents.style.alignItems = "center";
+  contents.style.gap = "0.25rem";
+
+  const icon = createIconWrapper();
+  const label = document.createElement("span");
+  label.dataset.octocopyLabel = "true";
+
+  contents.append(icon, label);
+  button.replaceChildren(contents);
 }
 
 async function handleCopy(button: HTMLButtonElement, pr: PullRequestLocation) {
@@ -167,7 +182,9 @@ function styleGraphiteButton(button: HTMLButtonElement) {
     if (contentsClass) contents.className = contentsClass;
     const textWrapper = document.createElement("span");
     if (textClass) textWrapper.className = textClass;
-    contents.appendChild(textWrapper);
+    textWrapper.dataset.octocopyLabel = "true";
+    const icon = createIconWrapper();
+    contents.append(icon, textWrapper);
     button.replaceChildren(contents);
     return;
   }
@@ -176,6 +193,11 @@ function styleGraphiteButton(button: HTMLButtonElement) {
   button.setAttribute("data-kind", "neutral");
   button.setAttribute("data-priority", "secondary");
   button.setAttribute("data-size", "m");
+  const contents = document.createElement("span");
+  const textWrapper = document.createElement("span");
+  textWrapper.dataset.octocopyLabel = "true";
+  contents.append(createIconWrapper(), textWrapper);
+  button.replaceChildren(contents);
 }
 
 function copyGraphiteButtonAttributes(
@@ -190,6 +212,14 @@ function copyGraphiteButtonAttributes(
 }
 
 function setButtonLabel(button: HTMLButtonElement, label: string) {
+  const labelTarget = button.querySelector<HTMLElement>(
+    "[data-octocopy-label]"
+  );
+  if (labelTarget) {
+    labelTarget.textContent = label;
+    return;
+  }
+
   if (button.dataset.platform === "graphite") {
     const textWrapper = button.querySelector<HTMLElement>(
       '[class^="Button_gdsButtonText__"]'
@@ -221,4 +251,39 @@ function ensureButtonIsFirst(
   }
 
   mountPoint.insertBefore(button, firstElement);
+}
+
+function createIconWrapper() {
+  const wrapper = document.createElement("span");
+  wrapper.dataset.octocopyIcon = "true";
+  wrapper.style.display = "inline-flex";
+  wrapper.style.alignItems = "center";
+  wrapper.style.lineHeight = "0";
+  wrapper.style.marginRight = "0.25rem";
+  wrapper.appendChild(createCopyIcon());
+  return wrapper;
+}
+
+function createCopyIcon() {
+  const svgNS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgNS, "svg");
+  svg.setAttribute("xmlns", svgNS);
+  svg.setAttribute("fill", "none");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("stroke-width", "1.5");
+  svg.setAttribute("stroke", "currentColor");
+  svg.setAttribute("width", "16");
+  svg.setAttribute("height", "16");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+
+  const path = document.createElementNS(svgNS, "path");
+  path.setAttribute("stroke-linecap", "round");
+  path.setAttribute("stroke-linejoin", "round");
+  path.setAttribute(
+    "d",
+    "M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+  );
+  svg.appendChild(path);
+  return svg;
 }
