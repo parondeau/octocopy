@@ -39,8 +39,8 @@ export function buildCopyPayload(
   const textSuffix = textLinks ? ` [${textLinks}]` : "";
   const htmlSuffix = htmlLinks ? ` [${htmlLinks}]` : "";
 
-  const text = `[${repoSlug}/${pr.number}]: ${data.title} (+${data.additions}/-${data.deletions})${textSuffix}`;
-  const html = `[${repoSlug}/${pr.number}]: ${escapeHtml(
+  const text = `[${repoSlug}#${pr.number}]: ${data.title} (+${data.additions}/-${data.deletions})${textSuffix}`;
+  const html = `[${repoSlug}#${pr.number}]: ${escapeHtml(
     data.title
   )} (+${data.additions}/-${data.deletions})${htmlSuffix}`;
 
