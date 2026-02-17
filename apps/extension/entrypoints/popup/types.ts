@@ -1,5 +1,7 @@
 export type Mode = "token" | "ui" | "app";
 
+export type MessageFormat = "default" | "linked-title";
+
 export type OnboardingStep = {
   id: string;
   label: string;
