@@ -7,6 +7,8 @@ import {
 } from "../lib/pull-request";
 
 const BUTTON_ID = "octocopy-copy-pr-button";
+const COPY_MESSAGE_TYPE = "octocopy:copy-current-pr";
+const TOAST_ID = "octocopy-toast";
 
 type TargetPlatform = "github" | "graphite";
 
@@ -15,6 +17,11 @@ export default defineContentScript({
   main() {
     const observer = new MutationObserver(handleDomChange);
     observer.observe(document.body, { childList: true, subtree: true });
+
+    browser.runtime.onMessage.addListener((message) => {
+      if (!message || message.type !== COPY_MESSAGE_TYPE) return;
+      void handleToolbarCopy();
+    });
 
     handleDomChange();
   },
@@ -152,6 +159,62 @@ async function handleCopy(button: HTMLButtonElement, pr: PullRequestLocation) {
   } finally {
     setTimeout(() => setButtonState(button, "idle"), 1500);
   }
+}
+
+async function handleToolbarCopy() {
+  const prLocation = parsePullRequestFromPath(window.location.pathname);
+  if (!prLocation) return;
+  try {
+    await copyPullRequest(prLocation);
+    showToast("Copied PR to clipboard.");
+  } catch (error) {
+    console.error("Octocopy: failed to copy PR from toolbar click", error);
+    showToast("Unable to copy PR details.", "error");
+  }
+}
+
+function showToast(message: string, tone: "success" | "error" = "success") {
+  const existing = document.getElementById(TOAST_ID);
+  if (existing?.parentElement) {
+    existing.parentElement.removeChild(existing);
+  }
+
+  const wrapper = document.createElement("div");
+  wrapper.id = TOAST_ID;
+  wrapper.style.position = "fixed";
+  wrapper.style.top = "16px";
+  wrapper.style.right = "16px";
+  wrapper.style.transform = "translateY(-8px)";
+  wrapper.style.zIndex = "2147483647";
+  wrapper.style.opacity = "0";
+  wrapper.style.transition = "opacity 140ms ease, transform 140ms ease";
+
+  const toast = document.createElement("div");
+  toast.textContent = message;
+  toast.style.border = "1px solid";
+  toast.style.borderColor = tone === "success" ? "#1f883d" : "#cf222e";
+  toast.style.backgroundColor = tone === "success" ? "#dafbe1" : "#ffebe9";
+  toast.style.color = tone === "success" ? "#1a7f37" : "#cf222e";
+  toast.style.borderRadius = "6px";
+  toast.style.padding = "12px 16px";
+  toast.style.whiteSpace = "nowrap";
+  toast.style.fontSize = "14px";
+  toast.style.fontWeight = "500";
+  toast.style.boxShadow = "0 8px 24px rgba(31, 35, 40, 0.15)";
+
+  wrapper.appendChild(toast);
+  document.body.appendChild(wrapper);
+
+  requestAnimationFrame(() => {
+    wrapper.style.opacity = "1";
+    wrapper.style.transform = "translateY(0)";
+  });
+
+  window.setTimeout(() => {
+    wrapper.style.opacity = "0";
+    wrapper.style.transform = "translateY(-8px)";
+    window.setTimeout(() => wrapper.remove(), 160);
+  }, 1800);
 }
 
 function setButtonState(

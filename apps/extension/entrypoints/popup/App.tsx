@@ -75,28 +75,38 @@ function App() {
   };
 
   return (
-    <div className="flex min-w-[360px] max-w-[420px] flex-col gap-4 bg-slate-100 p-4 text-slate-900">
-      <header>
-        <h1 className="text-xl font-semibold text-slate-900">Octocopy</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Configure how the extension fetches PR stats before copying.
-        </p>
-      </header>
+    <div className="min-h-screen bg-slate-100 text-slate-900">
+      <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 p-4 sm:p-6 lg:p-8">
+        <header className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+          <h1 className="text-2xl font-semibold text-slate-900">
+            Octocopy Settings
+          </h1>
+          <p className="mt-1 text-sm text-slate-500">
+            Configure how Octocopy fetches pull request stats and formats copied
+            output.
+          </p>
+        </header>
 
-      <ModeSection mode={mode} options={MODE_OPTIONS} onChange={setMode} />
+        <ModeSection mode={mode} options={MODE_OPTIONS} onChange={setMode} />
 
-      <CredentialsSection
-        mode={mode}
-        tokenValue={tokenValue}
-        onTokenChange={handleTokenChange}
-      />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <CredentialsSection
+            mode={mode}
+            tokenValue={tokenValue}
+            onTokenChange={handleTokenChange}
+          />
 
-      <MessageFormatSection
-        format={messageFormat}
-        onChange={setMessageFormat}
-      />
+          <MessageFormatSection
+            format={messageFormat}
+            onChange={setMessageFormat}
+          />
+        </div>
 
-      <PlatformsSection platforms={platforms} onToggle={handlePlatformToggle} />
+        <PlatformsSection
+          platforms={platforms}
+          onToggle={handlePlatformToggle}
+        />
+      </main>
     </div>
   );
 }

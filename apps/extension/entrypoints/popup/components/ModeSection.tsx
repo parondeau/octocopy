@@ -15,7 +15,7 @@ type Props = {
 };
 
 export function ModeSection({ mode, options, onChange }: Props) {
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const activeOption = options[mode];
   const accordionContentId = "mode-section-options";
 
