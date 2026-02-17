@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { CredentialsSection } from "./components/CredentialsSection";
+import { MessageFormatSection } from "./components/MessageFormatSection";
 import { ModeSection } from "./components/ModeSection";
 import { PlatformsSection } from "./components/PlatformsSection";
 import { useStoredState } from "./hooks/useStoredState";
-import type { Mode, PlatformSettings } from "./types";
+import type { MessageFormat, Mode, PlatformSettings } from "./types";
 
 const MODE_OPTIONS = {
   ui: {
@@ -37,6 +38,10 @@ const defaultPlatforms: PlatformSettings = {
 
 function App() {
   const [mode, setMode] = useStoredState<Mode>("octocopy-mode", "ui");
+  const [messageFormat, setMessageFormat] = useStoredState<MessageFormat>(
+    "octocopy-message-format",
+    "default"
+  );
   const [platforms, setPlatforms] = useStoredState(
     "octocopy-platforms",
     defaultPlatforms
@@ -84,6 +89,11 @@ function App() {
         mode={mode}
         tokenValue={tokenValue}
         onTokenChange={handleTokenChange}
+      />
+
+      <MessageFormatSection
+        format={messageFormat}
+        onChange={setMessageFormat}
       />
 
       <PlatformsSection platforms={platforms} onToggle={handlePlatformToggle} />

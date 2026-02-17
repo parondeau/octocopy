@@ -1,4 +1,7 @@
-import type { PlatformSettings } from "../entrypoints/popup/types";
+import type {
+  MessageFormat,
+  PlatformSettings,
+} from "../entrypoints/popup/types";
 import type { PullRequestData, PullRequestLocation } from "./pull-request";
 
 export type CopyPayload = {
@@ -11,7 +14,8 @@ const GRAPHITE_BASE_URL = "https://app.graphite.com/github/pr";
 export function buildCopyPayload(
   pr: PullRequestLocation,
   data: PullRequestData,
-  platforms: PlatformSettings
+  platforms: PlatformSettings,
+  messageFormat: MessageFormat
 ): CopyPayload {
   const repoSlug = `${pr.owner}/${pr.repo}`;
 
@@ -24,6 +28,37 @@ export function buildCopyPayload(
       label: "graphite",
       url: `${GRAPHITE_BASE_URL}/${pr.owner}/${pr.repo}/${pr.number}`,
     });
+  }
+
+  if (messageFormat === "linked-title") {
+    const [primaryLink, ...extraLinks] = links;
+
+    const textTitle = primaryLink
+      ? `[${data.title}](${primaryLink.url})`
+      : data.title;
+    const htmlTitle = primaryLink
+      ? `<a href="${escapeHtml(primaryLink.url)}">${escapeHtml(
+          data.title
+        )}</a>`
+      : escapeHtml(data.title);
+
+    const textLinks = extraLinks
+      .map(({ label, url }) => `[${label}](${url})`)
+      .join(", ");
+    const htmlLinks = extraLinks
+      .map(
+        ({ label, url }) =>
+          `<a href="${escapeHtml(url)}">${escapeHtml(label)}</a>`
+      )
+      .join(", ");
+
+    const textSuffix = textLinks ? ` [${textLinks}]` : "";
+    const htmlSuffix = htmlLinks ? ` [${htmlLinks}]` : "";
+
+    const text = `${textTitle} (${repoSlug} +${data.additions}/-${data.deletions})${textSuffix}`;
+    const html = `${htmlTitle} (${repoSlug} +${data.additions}/-${data.deletions})${htmlSuffix}`;
+
+    return { text, html };
   }
 
   const textLinks = links

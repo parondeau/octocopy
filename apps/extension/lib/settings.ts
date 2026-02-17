@@ -1,11 +1,17 @@
-import type { Mode, PlatformSettings } from "../entrypoints/popup/types";
+import type {
+  MessageFormat,
+  Mode,
+  PlatformSettings,
+} from "../entrypoints/popup/types";
 
 export type ExtensionSettings = {
+  messageFormat: MessageFormat;
   mode: Mode;
   platforms: PlatformSettings;
   token: string;
 };
 
+const DEFAULT_MESSAGE_FORMAT: MessageFormat = "default";
 const DEFAULT_MODE: Mode = "ui";
 const DEFAULT_PLATFORMS: PlatformSettings = {
   github: true,
@@ -13,6 +19,7 @@ const DEFAULT_PLATFORMS: PlatformSettings = {
 };
 
 const STORAGE_KEYS = {
+  messageFormat: "octocopy-message-format",
   mode: "octocopy-mode",
   platforms: "octocopy-platforms",
   token: "octocopy-token",
@@ -26,19 +33,24 @@ export async function loadExtensionSettings(): Promise<ExtensionSettings> {
   const area = storageArea;
   if (!area) {
     return {
+      messageFormat: DEFAULT_MESSAGE_FORMAT,
       mode: DEFAULT_MODE,
       platforms: DEFAULT_PLATFORMS,
       token: "",
     };
   }
 
-  const [mode, platforms, token] = await Promise.all([
+  const [messageFormat, mode, platforms, token] = await Promise.all([
+    readValue<MessageFormat>(area, STORAGE_KEYS.messageFormat),
     readValue<Mode>(area, STORAGE_KEYS.mode),
     readValue<PlatformSettings>(area, STORAGE_KEYS.platforms),
     readValue<string>(area, STORAGE_KEYS.token),
   ]);
 
   return {
+    messageFormat: isValidMessageFormat(messageFormat)
+      ? messageFormat
+      : DEFAULT_MESSAGE_FORMAT,
     mode: isValidMode(mode) ? mode : DEFAULT_MODE,
     platforms: isValidPlatforms(platforms) ? platforms : DEFAULT_PLATFORMS,
     token: typeof token === "string" ? token : "",
@@ -95,6 +107,10 @@ function createStorageArea(): StorageArea | null {
 
 function isValidMode(value: unknown): value is Mode {
   return value === "app" || value === "token" || value === "ui";
+}
+
+function isValidMessageFormat(value: unknown): value is MessageFormat {
+  return value === "default" || value === "linked-title";
 }
 
 function isValidPlatforms(value: unknown): value is PlatformSettings {
