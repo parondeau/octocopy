@@ -20,8 +20,12 @@ const DIFFSTAT_SELECTORS = [
   "[data-component='diffstat']",
   ".diffstat",
   ".gh-header-meta .color-fg-muted",
+  ".gh-header-meta .fgColor-muted",
   "[class*='FileChangeStats_fileChangeStats__']", // Graphite UI
 ];
+
+const GITHUB_ADDITIONS_SELECTORS = [".color-fg-success", ".fgColor-success"];
+const GITHUB_DELETIONS_SELECTORS = [".color-fg-danger", ".fgColor-danger"];
 
 const GRAPHITE_ADDITIONS_SELECTOR =
   "[class*='FileChangeStats_linesAdded__']";
@@ -111,6 +115,11 @@ function readDiffStats(): { additions: number; deletions: number } {
     if (spansStats) return spansStats;
   }
 
+  // Newer GitHub UI may keep the numeric values in sr-only text outside
+  // previous diffstat containers.
+  const srOnlyStats = readFromLinesChangedLabel(document);
+  if (srOnlyStats) return srOnlyStats;
+
   return { additions: 0, deletions: 0 };
 }
 
@@ -118,12 +127,12 @@ function readFromDiffstatSpans(
   element: HTMLElement
 ): { additions: number; deletions: number } | null {
   const additionsText =
-    element.querySelector<HTMLElement>(".color-fg-success")?.textContent ??
+    readTextFromSelectors(element, GITHUB_ADDITIONS_SELECTORS) ??
     element.querySelector<HTMLElement>(GRAPHITE_ADDITIONS_SELECTOR)
       ?.textContent ??
     "";
   const deletionsText =
-    element.querySelector<HTMLElement>(".color-fg-danger")?.textContent ??
+    readTextFromSelectors(element, GITHUB_DELETIONS_SELECTORS) ??
     element.querySelector<HTMLElement>(GRAPHITE_DELETIONS_SELECTOR)
       ?.textContent ??
     "";
@@ -136,6 +145,19 @@ function readFromDiffstatSpans(
       additions: additions ?? 0,
       deletions: deletions ?? 0,
     };
+  }
+  return null;
+}
+
+function readFromLinesChangedLabel(
+  root: ParentNode
+): { additions: number; deletions: number } | null {
+  const labels = root.querySelectorAll<HTMLElement>(".sr-only");
+  for (const label of labels) {
+    const text = label.textContent;
+    if (!text || !/lines?\s+changed/i.test(text)) continue;
+    const stats = extractStats(text);
+    if (stats) return stats;
   }
   return null;
 }
@@ -174,4 +196,15 @@ function parseLooseNumber(text: string): number | null {
   if (!normalized) return null;
   const value = Number(normalized);
   return Number.isFinite(value) ? Math.abs(value) : null;
+}
+
+function readTextFromSelectors(
+  root: ParentNode,
+  selectors: string[]
+): string | null {
+  for (const selector of selectors) {
+    const value = root.querySelector<HTMLElement>(selector)?.textContent;
+    if (value) return value;
+  }
+  return null;
 }
