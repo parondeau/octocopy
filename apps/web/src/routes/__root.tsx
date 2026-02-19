@@ -4,6 +4,7 @@ import {
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
+import { Github } from 'lucide-react'
 
 import appCss from '../styles.css?url'
 
@@ -93,6 +94,15 @@ function SiteHeader() {
           >
             Privacy
           </Link>
+          <a
+            href="https://github.com/parondeau/octocopy"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Octocopy GitHub repository"
+            className="text-slate-300 transition-colors hover:text-white"
+          >
+            <Github className="h-5 w-5" aria-hidden="true" />
+          </a>
         </nav>
       </div>
     </header>
