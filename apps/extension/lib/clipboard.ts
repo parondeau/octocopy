@@ -10,6 +10,7 @@ export type CopyPayload = {
 };
 
 const GRAPHITE_BASE_URL = "https://app.graphite.com/github/pr";
+const DEVIN_BASE_URL = "https://app.devin.com/review";
 
 export function buildCopyPayload(
   pr: PullRequestLocation,
@@ -18,10 +19,17 @@ export function buildCopyPayload(
   messageFormat: MessageFormat
 ): CopyPayload {
   const repoSlug = `${pr.owner}/${pr.repo}`;
+  const prPath = `${pr.owner}/${pr.repo}/pull/${pr.number}`;
 
   const links: Array<{ label: string; url: string }> = [];
   if (platforms.github) {
     links.push({ label: "github", url: data.html_url });
+  }
+  if (platforms.devin) {
+    links.push({
+      label: "devin",
+      url: `${DEVIN_BASE_URL}/${prPath}`,
+    });
   }
   if (platforms.graphite) {
     links.push({

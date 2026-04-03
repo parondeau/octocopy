@@ -33,6 +33,7 @@ const MODE_OPTIONS = {
 
 const defaultPlatforms: PlatformSettings = {
   github: true,
+  devin: false,
   graphite: false,
 };
 
@@ -49,17 +50,17 @@ function App() {
   const [tokenValue, setTokenValue] = useStoredState("octocopy-token", "");
 
   useEffect(() => {
-    if (!platforms.github && !platforms.graphite) {
+    if (!platforms.github && !platforms.devin && !platforms.graphite) {
       setPlatforms(defaultPlatforms);
     }
   }, [platforms, setPlatforms]);
 
-  const handlePlatformToggle = (name: "github" | "graphite") => {
+  const handlePlatformToggle = (name: "github" | "devin" | "graphite") => {
     setPlatforms((prev) => {
       const nextValue = !prev[name];
       if (!nextValue) {
-        const otherPlatform = name === "github" ? prev.graphite : prev.github;
-        if (!otherPlatform) {
+        const enabledCount = Object.values(prev).filter(Boolean).length;
+        if (enabledCount === 1) {
           return prev;
         }
       }

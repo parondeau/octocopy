@@ -12,5 +12,6 @@ export type OnboardingStep = {
 
 export type PlatformSettings = {
   github: boolean;
+  devin: boolean;
   graphite: boolean;
 };

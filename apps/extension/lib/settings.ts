@@ -15,6 +15,7 @@ const DEFAULT_MESSAGE_FORMAT: MessageFormat = "default";
 const DEFAULT_MODE: Mode = "ui";
 const DEFAULT_PLATFORMS: PlatformSettings = {
   github: true,
+  devin: false,
   graphite: false,
 };
 
@@ -118,6 +119,7 @@ function isValidPlatforms(value: unknown): value is PlatformSettings {
   const candidate = value as PlatformSettings;
   return (
     typeof candidate.github === "boolean" &&
+    typeof candidate.devin === "boolean" &&
     typeof candidate.graphite === "boolean"
   );
 }
