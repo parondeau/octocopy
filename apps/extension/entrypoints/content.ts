@@ -1,9 +1,7 @@
 import { copyPullRequest } from "../lib/copy-flow";
 import {
   PullRequestLocation,
-  deserializePullRequest,
   parsePullRequestFromPath,
-  serializePullRequest,
 } from "../lib/pull-request";
 
 const BUTTON_ID = "octocopy-copy-pr-button";
@@ -55,20 +53,17 @@ function handleDomChange() {
 
   let button = document.getElementById(BUTTON_ID) as HTMLButtonElement | null;
   if (!button) {
-    button = createButton(prLocation, platform);
-  } else {
-    button.dataset.pr = serializePullRequest(prLocation);
+    button = createButton(platform);
   }
 
   ensureButtonPlacement(platform, mountPoint, button);
 }
 
-function createButton(pr: PullRequestLocation, platform: TargetPlatform) {
+function createButton(platform: TargetPlatform) {
   const button = document.createElement("button");
   button.id = BUTTON_ID;
   button.type = "button";
   button.dataset.platform = platform;
-  button.dataset.pr = serializePullRequest(pr);
 
   if (platform === "graphite") {
     styleGraphiteButton(button);
@@ -79,9 +74,9 @@ function createButton(pr: PullRequestLocation, platform: TargetPlatform) {
 
   button.addEventListener("click", async (event) => {
     event.preventDefault();
-    const parsed = deserializePullRequest(button.dataset.pr);
-    if (!parsed) return;
-    await handleCopy(button, parsed);
+    const currentPr = getCurrentPullRequestLocation();
+    if (!currentPr) return;
+    await handleCopy(button, currentPr);
   });
 
   return button;
@@ -162,7 +157,7 @@ async function handleCopy(button: HTMLButtonElement, pr: PullRequestLocation) {
 }
 
 async function handleToolbarCopy() {
-  const prLocation = parsePullRequestFromPath(window.location.pathname);
+  const prLocation = getCurrentPullRequestLocation();
   if (!prLocation) return;
   try {
     await copyPullRequest(prLocation);
@@ -171,6 +166,10 @@ async function handleToolbarCopy() {
     console.error("Octocopy: failed to copy PR from toolbar click", error);
     showToast("Unable to copy PR details.", "error");
   }
+}
+
+function getCurrentPullRequestLocation(): PullRequestLocation | null {
+  return parsePullRequestFromPath(window.location.pathname);
 }
 
 function showToast(message: string, tone: "success" | "error" = "success") {
