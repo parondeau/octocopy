@@ -3,9 +3,11 @@ import type {
   PullRequestLocation,
 } from "./pull-request";
 
-const TITLE_SELECTORS = [
-  '[data-testid="issue-title"]',
-  ".js-issue-title",
+const GITHUB_TITLE_SELECTORS = [
+  '[data-component="PH_Title"]',
+  'h1[data-testid="issue-title"]',
+  'h1 [data-testid="issue-title"]',
+  "h1 .js-issue-title",
   "h1[data-test-selector='issue-title']",
   ".gh-header-title .markdown-title",
 ];
@@ -54,23 +56,40 @@ type HostPlatform = "github" | "graphite" | "other";
 function readTitle(platform: HostPlatform): string | null {
   const selectors =
     platform === "graphite"
-      ? [...GRAPHITE_TITLE_SELECTORS, ...TITLE_SELECTORS]
-      : TITLE_SELECTORS;
+      ? GRAPHITE_TITLE_SELECTORS
+      : GITHUB_TITLE_SELECTORS;
 
   for (const selector of selectors) {
-    const element = document.querySelector<HTMLElement>(selector);
+    const element = Array.from(
+      document.querySelectorAll<HTMLElement>(selector)
+    ).find(isReadableTitleElement);
     if (!element) continue;
     const value = cleanTitleText(element.textContent, platform);
     if (value) return value;
   }
 
-  const meta = document.querySelector<HTMLMetaElement>(
-    "meta[property='og:title']"
-  );
-  const metaValue = cleanTitleText(meta?.content, platform);
-  if (metaValue) return metaValue;
+  if (platform === "github") {
+    return readGitHubTitleFromDocumentTitle();
+  }
 
   return null;
+}
+
+function readGitHubTitleFromDocumentTitle(): string | null {
+  const match = document.title.match(
+    /^(.*?)\s+by\s+.+?\s+·\s+Pull Request #\d+\s+·\s+.+$/
+  );
+  const title = match?.[1]?.trim();
+  return title || null;
+}
+
+function isReadableTitleElement(element: HTMLElement): boolean {
+  if (!element.isConnected) return false;
+  if (element.closest("a")) return false;
+  if (element.getClientRects().length === 0) return false;
+
+  const style = window.getComputedStyle(element);
+  return style.display !== "none" && style.visibility !== "hidden";
 }
 
 function cleanTitleText(
