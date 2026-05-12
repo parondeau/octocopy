@@ -38,7 +38,7 @@ export function scrapePullRequestFromDom(
   pr: PullRequestLocation
 ): PullRequestData | null {
   const platform = detectPlatform();
-  const title = readTitle(platform);
+  const title = readTitle(platform, pr.number);
   if (!title) return null;
 
   const stats = readDiffStats();
@@ -53,7 +53,7 @@ export function scrapePullRequestFromDom(
 
 type HostPlatform = "github" | "graphite" | "other";
 
-function readTitle(platform: HostPlatform): string | null {
+function readTitle(platform: HostPlatform, prNumber: number): string | null {
   const selectors =
     platform === "graphite"
       ? GRAPHITE_TITLE_SELECTORS
@@ -64,7 +64,7 @@ function readTitle(platform: HostPlatform): string | null {
       document.querySelectorAll<HTMLElement>(selector)
     ).find(isReadableTitleElement);
     if (!element) continue;
-    const value = cleanTitleText(element.textContent, platform);
+    const value = cleanTitleText(element.textContent, platform, prNumber);
     if (value) return value;
   }
 
@@ -94,11 +94,20 @@ function isReadableTitleElement(element: HTMLElement): boolean {
 
 function cleanTitleText(
   raw: string | null | undefined,
-  platform: HostPlatform
+  platform: HostPlatform,
+  prNumber: number
 ): string | null {
   if (!raw) return null;
   const trimmed = raw.replace(/·.*$/, "").trim();
   if (!trimmed) return null;
+
+  if (platform === "github") {
+    const title = trimmed
+      .replace(new RegExp(`\\s*#${prNumber}\\s*Edit title\\s*$`, "i"), "")
+      .replace(new RegExp(`\\s*#${prNumber}\\s*$`), "")
+      .trim();
+    if (title) return title;
+  }
 
   if (platform === "graphite") {
     const match = trimmed.match(/^#\d+\s+(.*)$/);
